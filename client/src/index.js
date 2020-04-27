@@ -5,7 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import Routes from './routes';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:8080',
+  uri: 'http://localhost:8080/graphql',
 });
 
 const App = (
@@ -14,9 +14,4 @@ const App = (
   </ApolloProvider>
 );
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+ReactDOM.render(App, document.getElementById('root'));
