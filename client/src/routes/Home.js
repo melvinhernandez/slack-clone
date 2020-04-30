@@ -1,15 +1,15 @@
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import React from "react";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
 const allUsersQuery = gql`
-{
-	allUsers {
-    id
-    username
-    email
+  {
+    allUsers {
+      id
+      username
+      email
+    }
   }
-}
 `;
 
 const Home = () => {
@@ -20,8 +20,10 @@ const Home = () => {
 
   return (
     <ul>
-      {data.allUsers.map(user => (
-        <li key={user.id}>email: {user.email}, username: {user.username}</li>
+      {data.allUsers.map((user) => (
+        <li key={user.id}>
+          email: {user.email}, username: {user.username}
+        </li>
       ))}
     </ul>
   );

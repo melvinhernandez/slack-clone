@@ -1,16 +1,28 @@
 import React, { useState } from "react";
-import { Container, Header, Input, Button } from "semantic-ui-react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
+import { Container, Header, Input, Button, Message } from "semantic-ui-react";
 
 const registerMutation = gql`
   mutation($username: String!, $email: String!, $password: String!) {
-    register(username: $username, email: $email, password: $password)
+    register(username: $username, email: $email, password: $password) {
+      ok
+      errors {
+        path
+        message
+      }
+    }
   }
 `;
 
-const Register = () => {
+const Register = (props) => {
   const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
     username: "",
     email: "",
     password: "",
@@ -31,12 +43,24 @@ const Register = () => {
     const response = await registerUser({
       variables: form,
     });
+
+    const { ok, errors } = response.data.register;
+    if (ok) {
+      props.history.push("/");
+    } else {
+      const responseErrors = {};
+      errors.map(({ path, message }) => {
+        responseErrors[path] = message;
+      });
+      setFormErrors(responseErrors);
+    }
   };
 
   return (
     <Container text>
       <Header as="h2">Register</Header>
       <Input
+        error={!!formErrors.username}
         name="username"
         placeholder="Username"
         value={form.username}
@@ -44,6 +68,7 @@ const Register = () => {
         fluid
       />
       <Input
+        error={!!formErrors.email}
         type="email"
         name="email"
         placeholder="Email"
@@ -52,6 +77,7 @@ const Register = () => {
         fluid
       />
       <Input
+        error={!!formErrors.password}
         type="password"
         name="password"
         placeholder="Password"
@@ -60,6 +86,13 @@ const Register = () => {
         fluid
       />
       <Button onClick={onSubmit}>Register</Button>
+      {formErrors.username || formErrors.email || formErrors.password ? (
+        <Message
+          error
+          header="There was some errors with your submission"
+          list={Object.keys(formErrors).map((key) => formErrors[key])}
+        />
+      ) : null}
     </Container>
   );
 };
